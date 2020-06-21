@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 /**
  * 首页底部菜单
@@ -22,3 +21,19 @@ List<Map> bottomMenusBar = [
     "icon": CupertinoIcons.person
   }
 ];
+
+/**
+ * 常量 `key`
+ */
+class ConstKey {
+  static const title = '泸溪同城';
+  /**
+   * 基础接口
+   */
+  static const baseURL = 'http://a.ffiabg.top/wweb_8';
+
+  /**
+   * 未知的接口id
+   */
+  static const apiID = 76;
+}

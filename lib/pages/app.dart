@@ -13,6 +13,12 @@ class MainApplication extends StatefulWidget {
 }
 
 class MainApplicationState extends State<MainApplication> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
