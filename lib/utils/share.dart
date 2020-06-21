@@ -45,7 +45,6 @@ class PoiHttpShareUtils {
       };
       return _result;
     }).toList();
-    print(_res);
     return _res;
   }
 }

@@ -151,6 +151,13 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
     version: "2.1.12"
+  list_ext:
+    dependency: "direct main"
+    description:
+      name: list_ext
+      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
+    source: hosted
+    version: "0.1.9+1"
   matcher:
     dependency: transitive
     description:

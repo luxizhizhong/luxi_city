@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:luxi_city/api/luxi.dart';
 import 'package:luxi_city/config/const.dart';
+import 'package:list_ext/list_ext.dart';
 
 class AppHomeView extends StatefulWidget {
   @override
@@ -56,10 +57,45 @@ class AppHomeViewState extends State<AppHomeView> {
     return FutureBuilder(
       future: LuxiCityApi.getHomeMenus(),
       builder: (context, snapshot) {
+
         List<Map> lists = snapshot.data;
-        List<Widget> _lists = lists.map((item) {
-          return _menuItem(item);
-        }).toList();
+        // 最大高度
+        int maxCol = 3;
+        // 一列的长度
+        int widthCol = 5;
+        // 当前总长度
+        // int totalCol = lists.length;
+        // 换算的长度
+        int Col = maxCol * widthCol;
+        List ChunksList = lists.chunks(Col).toList();
+
+        Widget _render;
+
+        if (ChunksList.length >= 2) {
+          _render = Swiper(
+            itemBuilder: (BuildContext context, int index) {
+              List ele = ChunksList[index];
+              List<Widget> _lists = ele.map((item) {
+                return _menuItem(item);
+              }).toList();
+              return GridView.count(
+                crossAxisCount: 5,
+                children: _lists,
+              );
+            },
+            itemCount: ChunksList.length,
+            pagination: new SwiperPagination(),
+          );
+        } else {
+          List<Widget> _lists = lists.map((item) {
+            return _menuItem(item);
+          }).toList();
+          _render = GridView.count(
+            crossAxisCount: 5,
+            children: _lists,
+          );
+        }
+
         return Container(
           width: ScreenUtil.screenWidth,
           height: ScreenUtil().setHeight(720),
@@ -70,11 +106,9 @@ class AppHomeViewState extends State<AppHomeView> {
           decoration: BoxDecoration(
             // color: Colors.blue
           ),
-          child: GridView.count(
-            crossAxisCount: 5,
-            children: _lists,
-          ),
+          child: _render,
         );
+        
       }
     );
   }
@@ -86,6 +120,7 @@ class AppHomeViewState extends State<AppHomeView> {
     return Column(
       children: <Widget>[
         CircleAvatar(
+          backgroundColor: Colors.white,
           child: Image.network(
             item['img']
           ),
@@ -110,7 +145,7 @@ class AppHomeViewState extends State<AppHomeView> {
       builder: (context, snapshot) {
         var _lists = snapshot.data;
         return Container(
-          width: MediaQuery.of(context).size.width,
+          width: ScreenUtil.screenWidth,
           height: ScreenUtil().setHeight(666),
           decoration: BoxDecoration(
             color: Colors.blue[300],

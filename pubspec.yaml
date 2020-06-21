@@ -33,6 +33,7 @@ dependencies:
   flutter_screenutil: ^2.1.0
   dio: ^3.0.9
   common_utils: ^1.2.1
+  list_ext: 0.1.9+1
 
 dev_dependencies:
   flutter_test:
