@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:luxi_city/pages/app.dart';
 
-import 'api/luxi.dart';
-
 void main() => runApp(LuxiCityApplication());
 
 class LuxiCityApplication extends StatelessWidget {

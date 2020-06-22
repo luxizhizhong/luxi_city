@@ -7,6 +7,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:luxi_city/api/luxi.dart';
 import 'package:luxi_city/config/const.dart';
 import 'package:list_ext/list_ext.dart';
+import 'package:luxi_city/widget/widget.dart';
 
 class AppHomeView extends StatefulWidget {
   @override
@@ -46,13 +47,237 @@ class AppHomeViewState extends State<AppHomeView> {
         child: ListView(
           children: <Widget>[
             _banner(),
-            _menus()
+            _menus(),
+            _ads(),
+            _plate(),
           ],
         )
       )
     );
   }
 
+  /**
+   * 同城服务标题
+   */
+  Widget _plateTitle() {
+    return Container(
+      margin: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        // color: Colors.red
+      ),
+      child: Flex(
+        direction: Axis.horizontal,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 2.4,
+                  right: 8.2
+                ),
+                child: TtitleLine.Base(
+                  width: 5,
+                  height: 18
+                )
+              ),
+              RichText(
+                text: TextSpan(
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text: "城市信息",
+                      style: TextStyle(
+                        color: Colors.black
+                      )
+                    ),
+                    TextSpan(
+                      text: "全城信息发布中心",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color : Colors.grey[500]
+                      )
+                    )
+                  ]
+                )
+              )
+            ]
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "更多",
+                style: TextStyle(
+                  fontSize: 12,
+                  color : Colors.grey[500]
+                )
+              ),
+              Icon(
+                Icons.navigate_next,
+                color : Colors.grey[500]
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // FLag: 只能用 `50%` 来算..
+  Widget _plateGrid(double _w) {
+    // 间隙
+    double _sp = 2.4;
+    return Wrap(
+      spacing: _sp,
+      children: PlateGridViewList.map((Map item){
+        return _plateGridItem(
+          item: item,
+          w: _w,
+          sp: _sp
+        );
+      }).toList(),
+    );
+  }
+
+  /**
+   * 城市信息单列
+   * item: 单列数据
+   * w: 设置到的高度
+   * sp: 设置的间隙
+   */
+  Widget _plateGridItem({Map item, double w, double sp}) {
+    return Container(
+      width: (w / 2) - (sp * 2),
+      height: 42,
+      padding: EdgeInsets.all(2),
+      margin: EdgeInsets.only(
+        bottom: 12
+      ),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: Colors.grey[200]
+          ),
+          right: BorderSide(
+            color: Colors.grey[200]
+          )
+        )
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(left: 8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(
+                    bottom: 4
+                  ),
+                  child: Text(
+                    item['title'],
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87
+                    ),
+                  ),
+                ),
+                Text(
+                  item['subTitle'],
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[500]
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Center(
+            child: Image.network(
+              item['icon'],
+              width: 38,
+              height: 38,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  /**
+   * 同城服务
+   */
+  Widget _plate() {
+    return Container(
+      width: ScreenUtil.screenWidth,
+      // height: ScreenUtil().setHeight(460),
+      padding: EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: Colors.grey[300]
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white
+          ),
+          // padding: EdgeInsets.all(3.44),
+          child: LayoutBuilder(
+            builder: (ctx, _c) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _plateTitle(),
+                  _plateGrid(_c.maxWidth)
+                ],
+              );
+            },
+          )
+        ),
+      )
+    );
+  }
+
+  /**
+   * 这里是广告位
+   */
+  Widget _ads() {
+    return FutureBuilder(
+      future: LuxiCityApi.getYoli(),
+      builder: (context, snapshot) {
+        Map data = snapshot.data;
+        return Container(
+          width: ScreenUtil.screenWidth,
+          height: 80,
+          decoration: BoxDecoration(
+            color: Colors.black26
+          ),
+          child: Center(
+            child: RichText(
+              text: TextSpan(
+                children: <InlineSpan>[
+                  TextSpan(
+                    text: data['content'],
+                  ),
+                ]
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /**
+   * 菜单
+   */
   Widget _menus() {
     return FutureBuilder(
       future: LuxiCityApi.getHomeMenus(),
@@ -81,6 +306,7 @@ class AppHomeViewState extends State<AppHomeView> {
               return GridView.count(
                 crossAxisCount: 5,
                 children: _lists,
+                shrinkWrap: true,
               );
             },
             itemCount: ChunksList.length,
@@ -93,6 +319,7 @@ class AppHomeViewState extends State<AppHomeView> {
           _render = GridView.count(
             crossAxisCount: 5,
             children: _lists,
+            shrinkWrap: true,
           );
         }
 

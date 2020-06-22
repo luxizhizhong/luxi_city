@@ -48,4 +48,25 @@ class LuxiCityApi {
       throw new Exception("请求失败");
     }
   }
+
+  /**
+   * 一言api
+   */
+  static Future<Map> getYoli() async {
+    Map _result = {
+      "content": "", // 内容
+      "author": "", // 作者
+    };
+    try {
+      Response res = await dio.get("https://v1.hitokoto.cn/?encode=json");
+      Map _data = res.data;
+      _result['content'] = _data['hitokoto'];
+      _result['author'] = _data['from'];
+    } catch (err) {
+      _result['content'] = "打工是不可能打工的";
+      _result['author'] = "陈某";
+    }
+    return _result;
+  }
+
 }
