@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:frefresh/frefresh.dart';
 import 'package:luxi_city/api/luxi.dart';
 import 'package:luxi_city/config/const.dart';
 import 'package:list_ext/list_ext.dart';
@@ -21,38 +22,70 @@ class AppHomeViewState extends State<AppHomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: .4,
-        backgroundColor: Colors.white,
-        title: Text(
-          ConstKey.title,
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.black
-          ),
-        ),
-        centerTitle: false,
-        leading: Container(
-          child: Image.asset("assets/images/logo.jpg"),
-          padding: EdgeInsets.all(6.66),
-          // decoration: BoxDecoration(
-          //   color: Colors.yellow[100]
-          // ),
-        ),
-        actions: <Widget>[
-          _topIconActions()
-        ],
-      ),
+      appBar: _appBar(),
       body: Container(
-        child: ListView(
-          children: <Widget>[
-            _banner(),
-            _menus(),
-            _ads(),
-            _plate(),
-          ],
-        )
+        child: FRefresh(
+          /// 设置控制器
+          controller: controller,
+          /// 构建刷新 Header
+          headerBuilder: (setter, constraints) {
+            return Center(
+              child: Text("加载中.."),
+            );
+          },
+          /// 需要传入 Header 区域大小
+          headerHeight: 75.0,
+          /// 内容区域 Widget
+          child: ListView(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: <Widget>[
+              _banner(),
+              _menus(),
+              _ads(),
+              _plate(),
+            ],
+          ),
+          /// 进入 Refreshing 后会回调该函数
+          onRefresh: () {
+            /// 通过 controller 结束刷新
+            controller.finishRefresh();
+          },
+        ),
+        // child: ListView(
+        //   children: <Widget>[
+        //     _banner(),
+        //     _menus(),
+        //     _ads(),
+        //     _plate(),
+        //   ],
+        // )
       )
+    );
+  }
+
+  Widget _appBar() {
+    return AppBar(
+      elevation: .4,
+      backgroundColor: Colors.white,
+      title: Text(
+        ConstKey.title,
+        style: TextStyle(
+          fontSize: 16,
+          color: Colors.black
+        ),
+      ),
+      centerTitle: false,
+      leading: Container(
+        child: Image.asset("assets/images/logo.jpg"),
+        padding: EdgeInsets.all(6.66),
+        // decoration: BoxDecoration(
+        //   color: Colors.yellow[100]
+        // ),
+      ),
+      actions: <Widget>[
+        _topIconActions()
+      ],
     );
   }
 
@@ -451,3 +484,5 @@ class AppHomeViewState extends State<AppHomeView> {
   }
 
 }
+
+FRefreshController controller = FRefreshController();
