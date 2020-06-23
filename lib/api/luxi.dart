@@ -69,4 +69,23 @@ class LuxiCityApi {
     return _result;
   }
 
+  /// 获取商店
+  static Future<List> getStores({ int page = 0 }) async {
+    FormData formData = FormData.fromMap({
+      "page": page,
+      "ajax": "Y",
+      "accid": ConstKey.apiID,
+      "do": "lists",
+      "lng": null,
+      "lat": null,
+      "none": 1,
+      "screen": 0
+    });
+    Response res = await dio.post("/per_index.php", data: formData);
+    String data = res.data;
+    Map _data = jsonDecode(data);
+    List shopList = _data['shop_list'];
+    return shopList;
+  }
+
 }

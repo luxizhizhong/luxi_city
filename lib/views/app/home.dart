@@ -19,6 +19,28 @@ class AppHomeView extends StatefulWidget {
 }
 
 class AppHomeViewState extends State<AppHomeView> {
+
+  /// 分页
+  int _page = 0;
+  /// 商店
+  List _stores = [];
+
+  void getStoreLists() async {
+    List _list = await LuxiCityApi.getStores(page: _page);
+    int temp = _stores.length;
+    print("当前长度: $temp");
+    setState(() {
+      List _newList = _stores.copyWithAll(_list);
+      print("新的长度: ${ _newList.length }");
+      print("测试长度: ${ _stores.length }");
+    });
+  }
+
+  @override initState() {
+    getStoreLists();
+    super.initState();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,14 +49,16 @@ class AppHomeViewState extends State<AppHomeView> {
         child: FRefresh(
           /// 设置控制器
           controller: controller,
-          /// 构建刷新 Header
-          headerBuilder: (setter, constraints) {
-            return Center(
-              child: Text("加载中.."),
-            );
-          },
           /// 需要传入 Header 区域大小
           headerHeight: 75.0,
+          /// 构建刷新 Header
+          headerBuilder: (setter, constraints) {
+            return Container(
+              child: Center(
+                child: _loading(),
+              ),
+            );
+          },
           /// 内容区域 Widget
           child: ListView(
             physics: NeverScrollableScrollPhysics(),
@@ -44,6 +68,7 @@ class AppHomeViewState extends State<AppHomeView> {
               _menus(),
               _ads(),
               _plate(),
+              _store(),
             ],
           ),
           /// 进入 Refreshing 后会回调该函数
@@ -64,6 +89,52 @@ class AppHomeViewState extends State<AppHomeView> {
     );
   }
 
+  /**
+   * 推荐商家
+   */
+  Widget _store() {
+    return Container(
+      padding: EdgeInsets.all(4),
+      margin: EdgeInsets.only(
+        top: 8,
+        bottom: 8
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Bar.Base(
+            title: "推荐商家",
+            barColor: Colors.yellow
+          ),
+          _storeItem()
+        ],
+      ),
+    );
+  }
+
+  Widget _storeItem() {
+    return Column(
+      children: <Widget>[
+        Flex(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+
+          ],
+        ),
+        Text(
+          "个个都是人才",
+          textAlign: TextAlign.center,
+        )
+      ],
+    );
+  }
+
+  /**
+   * appbar
+   */
   Widget _appBar() {
     return AppBar(
       elevation: .4,
@@ -98,63 +169,28 @@ class AppHomeViewState extends State<AppHomeView> {
       decoration: BoxDecoration(
         // color: Colors.red
       ),
-      child: Flex(
-        direction: Axis.horizontal,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(
-                  left: 2.4,
-                  right: 8.2
-                ),
-                child: TtitleLine.Base(
-                  width: 5,
-                  height: 18
-                )
-              ),
-              RichText(
-                text: TextSpan(
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text: "城市信息",
-                      style: TextStyle(
-                        color: Colors.black
-                      )
-                    ),
-                    TextSpan(
-                      text: "全城信息发布中心",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color : Colors.grey[500]
-                      )
-                    )
-                  ]
-                )
-              )
-            ]
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "更多",
-                style: TextStyle(
-                  fontSize: 12,
-                  color : Colors.grey[500]
-                )
-              ),
-              Icon(
-                Icons.navigate_next,
+      child: Bar.Base(
+        title: "城市信息",
+        subTitle: "全城信息发布中心",
+        barColor: Colors.pink,
+        right: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "更多",
+              style: TextStyle(
+                fontSize: 12,
                 color : Colors.grey[500]
               )
-            ],
-          ),
-        ],
-      ),
+            ),
+            Icon(
+              Icons.navigate_next,
+              color : Colors.grey[500]
+            )
+          ],
+        )
+      )
     );
   }
 
@@ -290,7 +326,7 @@ class AppHomeViewState extends State<AppHomeView> {
           width: ScreenUtil.screenWidth,
           height: 80,
           decoration: BoxDecoration(
-            color: Colors.black26
+            color: Colors.pink
           ),
           child: Center(
             child: RichText(
