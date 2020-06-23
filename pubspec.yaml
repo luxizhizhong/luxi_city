@@ -35,6 +35,7 @@ dependencies:
   common_utils: ^1.2.1
   list_ext: 0.1.9+1
   frefresh: ^1.1.0
+  rating_bar: ^0.2.0
 
 dev_dependencies:
   flutter_test:
