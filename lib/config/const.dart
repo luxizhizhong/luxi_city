@@ -12,10 +12,11 @@ List<Map> bottomMenusBar = [
     "title": "首页",
     "icon": CupertinoIcons.home
   },
-  {
-     "title": "本地商城",
-     "icon": CupertinoIcons.location
-  },
+  // fix: 去除本地商城..
+  // {
+  //    "title": "本地商城",
+  //    "icon": CupertinoIcons.location
+  // },
   {
     "title": "本地信息",
     "icon": CupertinoIcons.bookmark
